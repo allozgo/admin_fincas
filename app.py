@@ -22,7 +22,7 @@ audios_collection = db['audios']
 
 @app.route('/', methods=['GET'])
 def plantilla():
-    return render_template ('endpoints.html')
+    return render_template('endpoints.html')
 
 @app.route('/subir_pdf', methods=['POST'])
 def subir_pdf():
@@ -31,7 +31,7 @@ def subir_pdf():
 
 @app.route('/resumen', methods=['GET'])
 def resumen(file):
-    text = extract_text (file)
+    text = extract_text(file)
     API_TOKEN = "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"
 
     API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
