@@ -29,11 +29,12 @@ def subir_pdf():
     file = request.files['file']
     return file
 
-@app.route('/resumen', methods=['GET'])
+@app.route('/resumen', methods=['GET', 'POST'])
 def resumen(file):
+    file = request.files['file']
     text = extract_text(file)
+    
     API_TOKEN = "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"
-
     API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
     headers = {"Authorization": f"Bearer {API_TOKEN}"}
 
@@ -41,10 +42,11 @@ def resumen(file):
         response = requests.post(API_URL, headers=headers, json=payload)
         return response.json()
 
-    resumen = query({"inputs":text})
+    resumen = query({"inputs": text})
     contenido_resumen = resumen[0][next(iter(resumen[0]))]
     resumen_collection.insert_one({'resumen': contenido_resumen})
-    return jsonify(contenido_resumen)
+    
+    return jsonify({'resumen': contenido_resumen})
 
 @app.route('/audio', methods=['GET'])
 def audio(contenido_resumen):
