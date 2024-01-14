@@ -29,7 +29,7 @@ def subir_pdf():
     file = request.files['file']
     return file
 
-@app.route('/resumen', methods=['POST'])
+@app.route('/resumen', methods=['GET','POST'])
 def resumen():
     file = request.files['file']
     text = extract_text(file)
