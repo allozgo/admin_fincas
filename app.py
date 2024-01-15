@@ -9,8 +9,6 @@ from PyPDF2 import PdfReader
 
 app = Flask(__name__)
 
-temp_file_storage = {}
-
 #conexiones con BBDD
 mongo_url ='mongodb+srv://falberola:5zZi7xSEYPPIdGgc@cluster0.hd9lmf3.mongodb.net/datadmin_fincas'
 client = MongoClient(mongo_url)
@@ -27,7 +25,6 @@ def prueba():
     if 'file' not in request.files:
         return "No se proporcionó ningún archivo"
     file = request.files['file']
-    temp_file_storage['uploaded_file'] = file.read()
 
     reader = PdfReader(file)
     text = ""
@@ -49,45 +46,56 @@ def prueba():
     
     return jsonify({'resumen': contenido_resumen}) 
 
-@app.route('/resumen', methods=['GET'])
+@app.route('/resumen', methods=['GET','POST'])
 def resumen():
-    try:
-        file_content = temp_file_storage.get('uploaded_file')
-        if not file_content:
-            return jsonify(error="No hay ningún archivo para procesar"), 400
+    text = extract_text('./Acta comunidad.pdf')
+    local_pdf_file = './Acta comunidad.pdf'
 
-        text = extract_text(file_content)
+    API_TOKEN = "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"
+
+    API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+    headers = {"Authorization": f"Bearer {API_TOKEN}"}
+
+    def query(payload):
+        response = requests.post(API_URL, headers=headers, json=payload)
+        return response.json()
         
-        API_TOKEN = "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"
-        API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
-        headers = {"Authorization": f"Bearer {API_TOKEN}"}
+    resumen = query({"inputs":text})
 
-        def query(payload):
-            response = requests.post(API_URL, headers=headers, json=payload)
-            return response.json()
+    contenido_resumen = resumen[0][next(iter(resumen[0]))]
 
-        resumen = query({"inputs": text})
-        contenido_resumen = resumen[0][next(iter(resumen[0]))]
+    texto = contenido_resumen
 
-        resumen_collection.insert_one({'resumen': contenido_resumen})
-        
-        return jsonify({'resumen': contenido_resumen}) 
+    tts = gTTS(text=texto, lang='es')
 
-    except Exception as e:
-        # Log the exception for debugging
-        print(f"Error: {str(e)}")
-        error_response = jsonify(error=str(e))
-        error_response.status_code = 500
-        return error_response
-        
+    tts.save("audio.mp3")
+
+
+    resumen_collection.insert_one({'resumen': texto})
+
+    local_audio_file = './audio.mp3'
+
+    # Connect to the GridFS collection
+    fs_pdf = GridFS(db, collection='pdfs')
+    fs_audio = GridFS(db, collection='audios')
+
+    # Open the local audio file in binary mode ('rb')
+    with open(local_audio_file, 'rb') as audio_file:
+        # Save the binary content to GridFS
+        audio_file_id = fs_audio.put(audio_file, filename='audio.mp3', metadata={'folder': 'audios'})
+
+    with open(local_pdf_file, 'rb') as pdf_file:
+        # Save the binary content to GridFS
+        pdf_file_id = fs_pdf.put(pdf_file, filename='acta.pdf', metadata={'folder': 'pdfs'})
+    #audios_collection.insert_one({'audio': audio_binario})
+
+    return jsonify({'resumen': texto})
+
 @app.route('/audio', methods=['GET','POST'])
 def audio():
-    file = temp_file_storage.get('uploaded_file')
-    
-    reader = PdfReader(file)
-    text = ""
-    for page in reader.pages:
-        text += page.extract_text() + "\n"
+    text = extract_text('./Acta comunidad.pdf')
+    local_pdf_file = './Acta comunidad.pdf'
+    #raw = parser.from_file('./texto1.pdf')
 
     API_TOKEN = "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"
 
