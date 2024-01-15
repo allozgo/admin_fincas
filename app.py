@@ -5,6 +5,9 @@ import os
 from pymongo import MongoClient 
 from pdfminer.high_level import extract_text 
 from gridfs import GridFS
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 app = Flask(__name__)
 
@@ -45,7 +48,7 @@ def prueba():
 
     except Exception as e:
         # Log the exception for debugging
-        print(f"Error: {str(e)}")
+        logging.error(f"Error: {str(e)}")
         error_response = jsonify(error=str(e))
         error_response.status_code = 500
         return error_response
