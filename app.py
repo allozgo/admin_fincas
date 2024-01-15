@@ -24,7 +24,7 @@ audios_collection = db['audios']
 def plantilla():
     return render_template('endpoints.html')
 
-@app.route('/subir_pdf', methods=['POST'])
+@app.route('/subir_pdf', methods=['GET','POST'])
 def subir_pdf():
     if 'file' not in request.files:
         return "No se proporcionó ningún archivo"
