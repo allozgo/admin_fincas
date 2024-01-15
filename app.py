@@ -5,7 +5,6 @@ import os
 from pymongo import MongoClient 
 from pdfminer.high_level import extract_text 
 from gridfs import GridFS
-import fitz
 
 app = Flask(__name__)
 
