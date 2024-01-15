@@ -49,7 +49,7 @@ def prueba():
         error_response.status_code = 500
         return error_response
 
-@app.route('/resumen', methods=['POST'])
+@app.route('/resumen', methods=['GET','POST'])
 def resumen():
     text = extract_text('./Acta comunidad.pdf')
     local_pdf_file = './Acta comunidad.pdf'
