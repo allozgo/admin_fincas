@@ -25,26 +25,20 @@ def prueba():
         if 'file' not in request.files:
             return "No se proporcionó ningún archivo"
         file = request.files['file']
-        pdf_bytes = file.read()
+        #pdf_bytes = file.read()
 
-        text = extract_text(pdf_bytes)
+        text = extract_text(file)
         
         API_TOKEN = "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"
         API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
         headers = {"Authorization": f"Bearer {API_TOKEN}"}
 
-        #def query(payload):
-        #    response = requests.post(API_URL, headers=headers, json=payload)
-        #    return response.json()
+        def query(payload):
+            response = requests.post(API_URL, headers=headers, json=payload)
+            return response.json()
 
-        #resumen = query({"inputs": text})
-        #contenido_resumen = resumen[0][next(iter(resumen[0]))]
-
-        payload = {"inputs": text}  # Modify this according to API documentation
-        response = requests.post(API_URL, headers=headers, json=payload)
-        contenido_resumen = response.json()
-        
-
+        resumen = query({"inputs": text})
+        contenido_resumen = resumen[0][next(iter(resumen[0]))]      
 
         resumen_collection.insert_one({'resumen': contenido_resumen})
         
