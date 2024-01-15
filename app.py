@@ -36,7 +36,7 @@ def subir_pdf():
 
     with open(file_path, 'rb') as pdf_file:
     # Save the binary content to GridFS
-    file_id = fs_pdf.put(pdf_file, filename='acta.pdf', metadata={'folder': 'pdfs'})
+        file_id = fs_pdf.put(pdf_file, filename='acta.pdf', metadata={'folder': 'pdfs'})
 
     return "Archivo recibido correctamente", 200
 
