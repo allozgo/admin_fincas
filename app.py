@@ -19,6 +19,13 @@ audios_collection = db['audios']
 def plantilla():
     return render_template('endpoints.html')
 
+@app.route('/prueba', methods=['POST'])
+def prueba():
+    if request.method == 'POST':   
+        f = request.files['file'] 
+        f.save(f.filename)   
+        return render_template("Acknowledgement.html", name = f.filename)  
+
 @app.route('/subir_pdf', methods=['POST'])
 def subir_pdf():
     text = extract_text('./Acta comunidad.pdf')
