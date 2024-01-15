@@ -22,41 +22,29 @@ def plantilla():
 
 @app.route('/prueba', methods=['POST'])
 def prueba():
-    try:
-        if 'file' not in request.files:
-            return "No se proporcionó ningún archivo"
-        file = request.files['file']
+    if 'file' not in request.files:
+        return "No se proporcionó ningún archivo"
+    file = request.files['file']
 
-        reader = PdfReader(file)
-        text = ""
-        for page in reader.pages:
-            text += page.extract_text() + "\n"
-        
-        #pdf_bytes = file.read()
+    reader = PdfReader(file)
+    text = ""
+    for page in reader.pages:
+        text += page.extract_text() + "\n"
+    
+    API_TOKEN = "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"
+    API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+    headers = {"Authorization": f"Bearer {API_TOKEN}"}
 
-        #text = extract_text(file)
-        
-        API_TOKEN = "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"
-        API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
-        headers = {"Authorization": f"Bearer {API_TOKEN}"}
+    def query(payload):
+        response = requests.post(API_URL, headers=headers, json=payload)
+        return response.json()
 
-        def query(payload):
-            response = requests.post(API_URL, headers=headers, json=payload)
-            return response.json()
+    resumen = query({"inputs": text})
+    contenido_resumen = resumen[0][next(iter(resumen[0]))]      
 
-        resumen = query({"inputs": text})
-        contenido_resumen = resumen[0][next(iter(resumen[0]))]      
-
-        resumen_collection.insert_one({'resumen': contenido_resumen})
-        
-        return jsonify({'resumen': contenido_resumen}) 
-
-    except Exception as e:
-        # Log the exception for debugging
-        print(f"Error: {str(e)}")
-        error_response = jsonify(error=str(e))
-        error_response.status_code = 500
-        return error_response
+    resumen_collection.insert_one({'resumen': contenido_resumen})
+    
+    return jsonify({'resumen': contenido_resumen}) 
 
 @app.route('/resumen', methods=['GET','POST'])
 def resumen():
