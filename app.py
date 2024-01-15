@@ -26,7 +26,6 @@ def prueba():
         if 'file' not in request.files:
             return "No se proporcionó ningún archivo"
         file = request.files['file']
-        #pdf_bytes = file.read()
 
         text = extract_text(file)
         
