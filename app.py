@@ -26,14 +26,14 @@ def plantilla():
 
 @app.route('/subir_pdf', methods=['POST'])
 def subir_pdf():
-    if 'archivo' not in request.files:
+    if 'file' not in request.files:
         return "No se proporcionó ningún archivo"
     file = request.files['file']
     return file
 
 @app.route('/resumen', methods=['GET','POST'])
 def resumen():
-    if 'archivo' not in request.files:
+    if 'file' not in request.files:
         return "No se proporcionó ningún archivo"
     file = request.files['file']
     text = extract_text(file)
