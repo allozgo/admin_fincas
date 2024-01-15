@@ -34,7 +34,7 @@ def subir_pdf():
 @app.route('/resumen', methods=['GET','POST'])
 def resumen():
     #if 'file' not in request.files:
-    #    return "No se proporcionó ningún archivo"git push
+    #    return "No se proporcionó ningún archivo"
     #file = request.files['file']
     file_content = request.args.get('file_content')
 
