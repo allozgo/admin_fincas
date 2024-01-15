@@ -5,7 +5,7 @@ import os
 from pymongo import MongoClient 
 from pdfminer.high_level import extract_text 
 from gridfs import GridFS
-from pypdf import PdfReader
+from PyPDF2 import PdfReader
 
 app = Flask(__name__)
 
