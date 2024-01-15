@@ -33,12 +33,20 @@ def prueba():
         API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
         headers = {"Authorization": f"Bearer {API_TOKEN}"}
 
-        def query(payload):
-            response = requests.post(API_URL, headers=headers, json=payload)
-            return response.json()
+        #def query(payload):
+        #    response = requests.post(API_URL, headers=headers, json=payload)
+        #    return response.json()
 
-        resumen = query({"inputs": text})
-        contenido_resumen = resumen[0][next(iter(resumen[0]))]
+        #resumen = query({"inputs": text})
+        #contenido_resumen = resumen[0][next(iter(resumen[0]))]
+
+        payload = {"inputs": text}  # Modify this according to API documentation
+        response = requests.post(API_URL, headers=headers, json=payload)
+        response_data = response.json()
+        # Handle the API response based on its structure
+        contenido_resumen = response_data.get("your_key")
+
+
         resumen_collection.insert_one({'resumen': contenido_resumen})
         
         return jsonify({'resumen': contenido_resumen}) 
