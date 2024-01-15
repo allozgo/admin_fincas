@@ -9,6 +9,8 @@ from PyPDF2 import PdfReader
 
 app = Flask(__name__)
 
+temp_file_storage = {}
+
 #conexiones con BBDD
 mongo_url ='mongodb+srv://falberola:5zZi7xSEYPPIdGgc@cluster0.hd9lmf3.mongodb.net/datadmin_fincas'
 client = MongoClient(mongo_url)
@@ -25,6 +27,7 @@ def prueba():
     if 'file' not in request.files:
         return "No se proporcionó ningún archivo"
     file = request.files['file']
+    temp_file_storage['uploaded_file'] = file.read()
 
     reader = PdfReader(file)
     text = ""
@@ -46,10 +49,14 @@ def prueba():
     
     return jsonify({'resumen': contenido_resumen}) 
 
-@app.route('/resumen', methods=['GET','POST'])
+@app.route('/resumen', methods=['GET'])
 def resumen():
-    text = extract_text('./Acta comunidad.pdf')
-    local_pdf_file = './Acta comunidad.pdf'
+    file = temp_file_storage.get('uploaded_file')
+
+    reader = PdfReader(file)
+    text = ""
+    for page in reader.pages:
+        text += page.extract_text() + "\n"
 
     API_TOKEN = "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"
 
@@ -93,9 +100,12 @@ def resumen():
 
 @app.route('/audio', methods=['GET','POST'])
 def audio():
-    text = extract_text('./Acta comunidad.pdf')
-    local_pdf_file = './Acta comunidad.pdf'
-    #raw = parser.from_file('./texto1.pdf')
+    file = temp_file_storage.get('uploaded_file')
+    
+    reader = PdfReader(file)
+    text = ""
+    for page in reader.pages:
+        text += page.extract_text() + "\n"
 
     API_TOKEN = "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"
 
