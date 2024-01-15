@@ -34,9 +34,10 @@ def subir_pdf():
 @app.route('/resumen', methods=['GET','POST'])
 def resumen():
     if 'file' not in request.files:
-        return "No se proporcionó ningún archivo"
+        return "No se proporcionó ningún archivo"git push
     file = request.files['file']
-    text = extract_text(file)
+
+    text = extract_text(file_content)
     
     API_TOKEN = "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"
     API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
