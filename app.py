@@ -20,25 +20,49 @@ def plantilla():
 
 @app.route('/subir_pdf', methods=['POST'])
 def subir_pdf():
-    if 'file' not in request.files:
-        return "No se proporcionó ningún archivo"
+    text = extract_text('./Acta comunidad.pdf')
+    local_pdf_file = './Acta comunidad.pdf'
+    #raw = parser.from_file('./texto1.pdf')
 
-    file = request.files['file']
+    API_TOKEN = "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"
 
-    if not file:
-        return "El archivo está vacío"
+    API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+    headers = {"Authorization": f"Bearer {API_TOKEN}"}
 
-    # Ubicación temporal
-    file_path = os.path.join("temp", "uploaded_file.pdf")
-    file.save(file_path)
+    def query(payload):
+        response = requests.post(API_URL, headers=headers, json=payload)
+        return response.json()
+        
+    resumen = query({"inputs":text})
 
+    contenido_resumen = resumen[0][next(iter(resumen[0]))]
+
+    texto = contenido_resumen
+
+    tts = gTTS(text=texto, lang='es')
+
+    tts.save("audio.mp3")
+
+
+    resumen_collection.insert_one({'resumen': texto})
+
+    local_audio_file = './audio.mp3'
+
+    # Connect to the GridFS collection
     fs_pdf = GridFS(db, collection='pdfs')
+    fs_audio = GridFS(db, collection='audios')
 
-    with open(file_path, 'rb') as pdf_file:
-    # Save the binary content to GridFS
+    # Open the local audio file in binary mode ('rb')
+    with open(local_audio_file, 'rb') as audio_file:
+        # Save the binary content to GridFS
+        file_id = fs_audio.put(audio_file, filename='audio.mp3', metadata={'folder': 'audios'})
+
+    with open(local_pdf_file, 'rb') as pdf_file:
+        # Save the binary content to GridFS
         file_id = fs_pdf.put(pdf_file, filename='acta.pdf', metadata={'folder': 'pdfs'})
-
-    return "Archivo recibido correctamente", 200
+    #audios_collection.insert_one({'audio': audio_binario})
+    
+    return
 
 @app.route('/resumen', methods=['GET','POST'])
 def resumen():
