@@ -73,8 +73,7 @@ def subir_pdf():
     return jsonfy{
         'pdf_id':str(pdf_file_id),
         'audio_id': str(audio_file_id),
-        'resumen': texto
-    }
+        'resumen': texto}
 
 @app.route('/resumen', methods=['GET','POST'])
 def resumen():
