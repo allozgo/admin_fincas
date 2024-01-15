@@ -5,6 +5,7 @@ import os
 from pymongo import MongoClient 
 from pdfminer.high_level import extract_text 
 from gridfs import GridFS
+from pypdf import PdfReader
 
 app = Flask(__name__)
 
@@ -25,9 +26,15 @@ def prueba():
         if 'file' not in request.files:
             return "No se proporcionó ningún archivo"
         file = request.files['file']
-        pdf_bytes = file.read()
 
-        text = extract_text(pdf_bytes)
+        reader = PdfReader(file)
+        text = ""
+        for page in reader.pages:
+            text += page.extract_text() + "\n"
+        
+        #pdf_bytes = file.read()
+
+        #text = extract_text(file)
         
         API_TOKEN = "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"
         API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
