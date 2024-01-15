@@ -23,16 +23,12 @@ def plantilla():
 @app.route('/prueba', methods=['POST'])
 def prueba():
     try:
-        fitz.open(stream=input_bytes, filetype="pdf")
-        all_text = ""
-        for page in fitz.pages():
-        all_text += page.get_text("text")
-        #if 'file' not in request.files:
-        #    return "No se proporcionó ningún archivo"
-        #file = request.files['file']
-        #pdf_bytes = file.read()
+        if 'file' not in request.files:
+            return "No se proporcionó ningún archivo"
+        file = request.files['file']
+        pdf_bytes = file.read()
 
-        #text = extract_text(pdf_bytes)
+        text = extract_text(pdf_bytes)
         
         API_TOKEN = "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"
         API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
@@ -42,8 +38,7 @@ def prueba():
             response = requests.post(API_URL, headers=headers, json=payload)
             return response.json()
 
-        #resumen = query({"inputs": text})
-        resumen = query({"inputs": all_text})
+        resumen = query({"inputs": text})
         contenido_resumen = resumen[0][next(iter(resumen[0]))]
         texto = contenido_resumen
         resumen_collection.insert_one({'resumen': texto})
