@@ -40,10 +40,9 @@ def prueba():
 
         resumen = query({"inputs": text})
         contenido_resumen = resumen[0][next(iter(resumen[0]))]
-        texto = contenido_resumen
-        resumen_collection.insert_one({'resumen': texto})
+        resumen_collection.insert_one({'resumen': contenido_resumen})
         
-        return jsonify({'resumen': texto}) 
+        return jsonify({'resumen': contenido_resumen}) 
 
     except Exception as e:
         # Log the exception for debugging
