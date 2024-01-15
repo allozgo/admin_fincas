@@ -93,7 +93,7 @@ def resumen():
         pdf_file_id = fs_pdf.put(pdf_file, filename='acta.pdf', metadata={'folder': 'pdfs'})
     #audios_collection.insert_one({'audio': audio_binario})
 
-    return jsonify({'resumen': contenido_resumen})
+    return jsonify({'resumen': texto})
 
 @app.route('/audio', methods=['GET','POST'])
 def audio():
