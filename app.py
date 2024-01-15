@@ -42,9 +42,8 @@ def prueba():
 
         payload = {"inputs": text}  # Modify this according to API documentation
         response = requests.post(API_URL, headers=headers, json=payload)
-        response_data = response.json()
-        # Handle the API response based on its structure
-        contenido_resumen = response_data.get("your_key")
+        contenido_resumen = response.json()
+        
 
 
         resumen_collection.insert_one({'resumen': contenido_resumen})
