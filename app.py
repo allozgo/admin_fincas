@@ -21,10 +21,33 @@ def plantilla():
 
 @app.route('/prueba', methods=['POST'])
 def prueba():
-    if request.method == 'POST':   
-        f = request.files['file'] 
-        f.save(f.filename)   
-        return render_template("Acknowledgement.html", name = f.filename)  
+    try:
+        if 'file' not in request.files:
+            return "No se proporcionó ningún archivo"
+        file = request.files['file']
+
+        text = extract_text(file)
+        
+        API_TOKEN = "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"
+        API_URL = "https://api-inference.huggingface.co/models/facebook/bart-large-cnn"
+        headers = {"Authorization": f"Bearer {API_TOKEN}"}
+
+        def query(payload):
+            response = requests.post(API_URL, headers=headers, json=payload)
+            return response.json()
+
+        resumen = query({"inputs": text})
+        contenido_resumen = resumen[0][next(iter(resumen[0]))]
+        resumen_collection.insert_one({'resumen': contenido_resumen})
+        
+        return jsonify({'resumen': contenido_resumen}) 
+
+    except Exception as e:
+        # Log the exception for debugging
+        print(f"Error: {str(e)}")
+        error_response = jsonify(error=str(e))
+        error_response.status_code = 500
+        return error_response
 
 @app.route('/resumen', methods=['POST'])
 def resumen():
