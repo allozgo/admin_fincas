@@ -25,10 +25,10 @@ def plantilla():
 
 @app.route('/subir_pdf', methods=['POST'])
 def prueba():
+    file = request.files['file']
     if 'file' not in request.files:
 
         return "No se proporcionó ningún archivo"
-    file = request.files['file']
 
     reader = PdfReader(file)
     text = ""
@@ -48,7 +48,7 @@ def prueba():
 
     resumen_collection.insert_one({'resumen': contenido_resumen})
     
-    return jsonify({'resumen': contenido_resumen}) 
+    return jsonify({'message': 'Archivo recibido con éxito'}), 201
 
 @app.route('/resumen', methods=['GET','POST'])
 def resumen():
