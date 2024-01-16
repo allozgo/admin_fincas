@@ -6,8 +6,11 @@ from pymongo import MongoClient
 from pdfminer.high_level import extract_text 
 from gridfs import GridFS
 from PyPDF2 import PdfReader
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+CORS(app)
 
 #conexiones con BBDD
 mongo_url ='mongodb+srv://falberola:5zZi7xSEYPPIdGgc@cluster0.hd9lmf3.mongodb.net/datadmin_fincas'
@@ -23,6 +26,7 @@ def plantilla():
 @app.route('/subir_pdf', methods=['POST'])
 def prueba():
     if 'file' not in request.files:
+
         return "No se proporcionó ningún archivo"
     file = request.files['file']
 
