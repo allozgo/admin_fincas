@@ -73,7 +73,7 @@ def resumen():
     if document:
         resumen_texto = document.get('resumen')
     else:
-        print("No se ha encontrado ningún resumen en la base de datos")
+        return "No se ha encontrado ningún resumen en la base de datos"
 
     return jsonify({'resumen': resumen_texto})
 
@@ -95,7 +95,7 @@ def audio():
         return send_file(audio_file, as_attachment=True, download_name=audio_file.filename, mimetype='audio/mp3')
 
     else:
-        return "No audio files found in the collection."
+        return "No se ha encontrado ningún audio en la base de datos"
 
 if __name__ == '__main__':
     app.run(debug=True,port=8000)
