@@ -62,7 +62,7 @@ def prueba():
 
     with open(local_audio_file, 'rb') as audio_file:
         # Save the binary content to GridFS
-        audio_file_id = fs_audio.put(audio_file, filename="Acta_comunidad.pdf.mp3", metadata={'folder': 'audios'})
+        audio_file_id = fs_audio.put(audio_file, filename=f"{file_name}.mp3", metadata={'folder': 'audios'})
     pdf_file_id = fs_pdf.put(file, filename=file_name, metadata={'folder': 'pdfs'})
 
 
