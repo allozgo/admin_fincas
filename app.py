@@ -78,7 +78,7 @@ def resumen():
         return "No se ha encontrado ningún resumen en la base de datos"
 
     return jsonify({'resumen': resumen_texto})
-
+'''
 @app.route('/audio', methods=['GET'])
 def audio():
     fs_audio = GridFS(db, collection='audios')
@@ -107,6 +107,6 @@ def audio():
 
     else:
         return "No se ha encontrado ningún audio en la base de datos"
-
+'''
 if __name__ == '__main__':
     app.run(debug=True,port=8000)
