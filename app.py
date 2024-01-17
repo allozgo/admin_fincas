@@ -67,7 +67,7 @@ def prueba():
 
 
     return jsonify({'message': f'Archivo de audio "{file_name}" y resumen generados y guardados correctamente'}), 201
-
+'''
 @app.route('/resumen', methods=['GET','POST'])
 def resumen():
     document = resumen_collection.find_one()
@@ -78,7 +78,7 @@ def resumen():
         return "No se ha encontrado ningún resumen en la base de datos"
 
     return jsonify({'resumen': resumen_texto})
-'''
+
 @app.route('/audio', methods=['GET'])
 def audio():
     fs_audio = GridFS(db, collection='audios')
