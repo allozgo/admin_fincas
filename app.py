@@ -20,11 +20,11 @@ client = MongoClient(mongo_url)
 db = client.get_database('datadmin_fincas')
 resumen_collection = db['resumen'] 
 audios_collection = db['audios'] 
-'''
+
 @app.route('/', methods=['GET'])
 def plantilla():
     return render_template('endpoints.html')
-'''
+
 @app.route('/subir_pdf', methods=['POST'])
 def prueba():
     if 'file' not in request.files:
@@ -90,7 +90,7 @@ def audio():
         binary_content = audio_file.read()
 
         # Convertir el formato binario a AudioSegment
-        audio_data = AudioSegment.from_file(io.BytesIO(binary_content))
+        audio_data = AudioSegment.from_file(io.BytesIO(binary_content), format="mp3")
 
         # Guardar el AudioSegment como MP3
         mp3_content = io.BytesIO()
