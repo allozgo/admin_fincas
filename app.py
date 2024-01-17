@@ -90,7 +90,7 @@ def audio():
         binary_content = audio_file.read()
 
         # Convertir el formato binario a AudioSegment
-        audio_data = AudioSegment.from_file(io.BytesIO(binary_content), format="mp3")
+        audio_data = AudioSegment.from_file(io.BytesIO(binary_content))
 
         # Guardar el AudioSegment como MP3
         mp3_content = io.BytesIO()
