@@ -7,6 +7,8 @@ from pdfminer.high_level import extract_text
 from gridfs import GridFS
 from PyPDF2 import PdfReader
 from flask_cors import CORS
+from pydub import AudioSegment
+import io
 
 app = Flask(__name__)
 
@@ -77,22 +79,31 @@ def resumen():
 
     return jsonify({'resumen': resumen_texto})
 
-@app.route('/audio', methods=['GET','POST'])
+@app.route('/audio', methods=['GET'])
 def audio():
     fs_audio = GridFS(db, collection='audios')
-
     # Assuming there's only one audio file, retrieve it
     audio_file = fs_audio.find_one()
 
     if audio_file:
+        # Leer el contenido binario del archivo
+        binary_content = audio_file.read()
+
+        # Convertir el formato binario a AudioSegment
+        audio_data = AudioSegment.from_file(io.BytesIO(binary_content), format="mp3")
+
+        # Guardar el AudioSegment como MP3
+        mp3_content = io.BytesIO()
+        audio_data.export(mp3_content, format="mp3")
+
         # Set the appropriate response headers
         response_headers = {
             'Content-Type': 'audio/mp3',
             'Content-Disposition': f'attachment; filename={audio_file.filename}'
         }
 
-        # Return the audio file as a response
-        return send_file(audio_file, as_attachment=True, download_name=audio_file.filename, mimetype='audio/mp3')
+        # Return the MP3 file as a response
+        return send_file(mp3_content, as_attachment=True, download_name=f"{audio_file.filename}", mimetype='audio/mp3')
 
     else:
         return "No se ha encontrado ningún audio en la base de datos"
