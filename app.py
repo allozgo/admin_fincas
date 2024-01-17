@@ -24,7 +24,7 @@ audios_collection = db['audios']
 @app.route('/', methods=['GET'])
 def plantilla():
     return render_template('endpoints.html')
-
+'''
 @app.route('/subir_pdf', methods=['POST'])
 def prueba():
     if 'file' not in request.files:
@@ -67,7 +67,7 @@ def prueba():
 
 
     return jsonify({'message': f'Archivo de audio "{file_name}" y resumen generados y guardados correctamente'}), 201
-'''
+
 @app.route('/resumen', methods=['GET','POST'])
 def resumen():
     document = resumen_collection.find_one()
