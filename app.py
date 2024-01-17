@@ -24,7 +24,7 @@ audios_collection = db['audios']
 @app.route('/', methods=['GET'])
 def plantilla():
     return render_template('endpoints.html')
-'''
+
 @app.route('/subir_pdf', methods=['POST'])
 def prueba():
     if 'file' not in request.files:
@@ -107,6 +107,6 @@ def audio():
 
     else:
         return "No se ha encontrado ningún audio en la base de datos"
-'''
+
 if __name__ == '__main__':
     app.run(debug=True,port=8000)
