@@ -1,6 +1,8 @@
 flask
+transformers
 pymongo
 gtts
+pdfminer.six
 gunicorn
 psycopg2-binary
 PyPDF2
