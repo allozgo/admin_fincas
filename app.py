@@ -64,7 +64,7 @@ def prueba():
     pdf_file_id = fs_pdf.put(file, filename=file_name, metadata={'folder': 'pdfs'})
 
 
-    return jsonify({'message': f'Archivo de audio "{file_name}" generado y guardado correctamente'}), 201
+    return jsonify({'message': f'Archivo de audio "{file_name}" y resumen generados y guardados correctamente'}), 201
 
 @app.route('/resumen', methods=['GET','POST'])
 def resumen():
