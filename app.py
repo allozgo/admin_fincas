@@ -20,15 +20,15 @@ client = MongoClient(mongo_url)
 db = client.get_database('datadmin_fincas')
 resumen_collection = db['resumen'] 
 audios_collection = db['audios'] 
-
+'''
 @app.route('/', methods=['GET'])
 def plantilla():
     return render_template('endpoints.html')
-
+'''
 @app.route('/subir_pdf', methods=['POST'])
 def prueba():
     if 'file' not in request.files:
-        return "No se proporcionó ningún archivo"
+        return "No se proporcionó ningún archivo", 400
     file = request.files['file']
     file_name = file.filename
 
@@ -75,7 +75,7 @@ def resumen():
     if document:
         resumen_texto = document.get('resumen')
     else:
-        return "No se ha encontrado ningún resumen en la base de datos"
+        return "No se ha encontrado ningún resumen en la base de datos", 404
 
     return jsonify({'resumen': resumen_texto})
 
@@ -106,7 +106,7 @@ def audio():
         return send_file(mp3_content, as_attachment=True, download_name=f"{audio_file.filename}", mimetype='audio/mp3')
 
     else:
-        return "No se ha encontrado ningún audio en la base de datos"
+        return "No se ha encontrado ningún audio en la base de datos", 404
 
 if __name__ == '__main__':
     app.run(debug=True,port=8000)
